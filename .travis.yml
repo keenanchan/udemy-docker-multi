@@ -1,0 +1,24 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t keenanchan/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true keenanchan/react-test npm test
+
+after_success:
+  - docker build -t keenanchan/multi-client ./client
+  - docker build -t keenanchan/multi-nginx ./nginx
+  - docker build -t keenanchan/multi-server ./server
+  - docker build -t keenanchan/multi-worker ./worker
+  # take images, push to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push keenanchan/multi-client
+  - docker push keenanchan/multi-nginx
+  - docker push keenanchan/multi-server
+  - docker push keenanchan/multi-worker
