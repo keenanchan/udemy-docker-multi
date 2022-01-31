@@ -22,3 +22,15 @@ after_success:
   - docker push keenanchan/multi-nginx
   - docker push keenanchan/multi-server
   - docker push keenanchan/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'udemy-docker-multi'
+  env: 'Udemydockermulti-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-175412969001'
+  bucket_path: 'udemy-docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KKEY
+  secret_access_key: $AWS_SECRET_KEY
